@@ -1,11 +1,14 @@
 <html>
 
 <head>
-  <title>Express</title>
+  <title>Khung tap di</title>
   <link rel="stylesheet" href="/stylesheets/style.css">
   <!-- mapbox -->
   <link href="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.css" rel="stylesheet">
   <script src="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.js"></script>
+
+  <!-- chart -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     #map {
       width: 60%;
@@ -59,19 +62,161 @@
   </div>
   <div class="block" id="heart">
     <h4>Nhịp tim</h4>
+    <div>
+      <canvas id="heartRateChart"></canvas>
+    </div>
   </div>
   <div class="block" id="o2">
     <h4>SpO<sub>2</sub></h4>
+    <div>
+      <canvas id="spo2Chart"></canvas>
+    </div>
   </div>
   <div class="block" id="temp">
     <h4>Nhiệt độ</h4>
+    <div>
+      <canvas id="tempChart"></canvas>
+    </div>
   </div>
+
+
+
+  <script src="/socket.io/socket.io.js"></script>
   <script>
     const socket = io();
     socket.on('connect', () => {
       console.log('connected');
     });
+    socket.on("/web/up-data", (measureData) => {
+      console.log(measureData);
+      if (measureData.heartRate) {
+        document.getElementById("heartRate").textContent = measureData.heartRate;
+        addNewData(charts[0], new Date().toLocaleDateString("VI"), measureData.heartRate);
+      }
+      if (measureData.spo2) {
+        document.getElementById("spo2").textContent = measureData.spo2;
+        addNewData(charts[1], new Date().toLocaleDateString("VI"), measureData.spo2);
+      }
+      if (measureData.temp) {
+        document.getElementById("temp").textContent = measureData.temp;
+        addNewData(charts[2], new Date().toLocaleDateString("VI"), measureData.temp);
+      }
+      if (measureData.distance) {
+        document.getElementById("distance").textContent = measureData.distance;
+      }
+      if (measureData.location) {
+        markLocation = [measureData.location.lng, measureData.location.lat];
+        map.setCenter(markLocation);
+        marker.setLngLat(markLocation);
+      }
+    })
 
+  </script>
+  <script>
+    function genChartConfig(label, data, color) {
+      return {
+        type: 'line',
+        data: {
+          labels: data.map(data => data.time),
+          datasets: [{
+            label: label.name,
+            data: data.map(d => { return d[label.id] }),
+            backgroundColor: color,
+            borderColor: color,
+            borderWidth: 1,
+            tension: 0.1
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      }
+    }
+
+    let labels = [
+      {
+        name: "Nhịp tim",
+        id: "heartRate"
+      },
+      {
+        name: "SpO2",
+        id: "spo2"
+      },
+      {
+        name: "Nhiệt độ cơ thể",
+        id: "temp"
+      }
+    ]
+
+    let datas = {
+      heartRate: [{
+        time: new Date().toLocaleDateString("VI"),
+        heartRate: 60
+      }],
+      spo2: [{
+        time: new Date().toLocaleDateString("VI"),
+        spo2: 90
+      }],
+      temp: [{
+        time: new Date().toLocaleDateString("VI"),
+        temp: 37
+      }]
+    }
+    let chartIDs = ["heartRateChart", "spo2Chart", "tempChart"];
+    let colors = ["#2a9d8f", "#e9c46a", "#e76f51"];
+    let chartConfigs = [];
+    let charts = [];
+
+    for (let i = 0; i < labels.length; i++) {
+      chartConfigs.push(genChartConfig(labels[i], datas[labels[i].id], colors[i]));
+      charts.push(new Chart(chartIDs[i], chartConfigs[i]));
+    }
+
+    function addNewData(chart, label, data) {
+      chart.data.labels.push(label);
+      chart.data.datasets.forEach((dataset) => {
+        dataset.data.push(data);
+      });
+      chart.update();
+    }
+
+    function removeChartData(chart) {
+      if (!(chart.data.labels.length > 10)) {
+        console.log('no need to remove')
+        return;
+      }
+      console.log(chart.data.labels.length)
+
+      chart.data.labels.shift();
+      chart.data.datasets.forEach((dataset) => {
+        dataset.data.shift();
+      });
+      chart.update();
+    }
+
+    function genFakeData(type, number = 1, range1, range2) {
+      for (let i = 0; i < number; i++) {
+        let obj = {
+          [type]: Math.floor(Math.random() * range1) + range2,
+          time: new Date().toLocaleTimeString('VI')
+        }
+        console.log(obj)
+        datas[type].push(obj)
+        if (charts[labels.findIndex(label => label.id === type)] === undefined) {
+          return;
+        }
+        addNewData(
+          charts[labels.findIndex(label => label.id === type)],
+          datas[type][datas[type].length - 1].time,
+          +datas[type][datas[type].length - 1][type] // convert to number
+        )
+        removeChartData(charts[labels.findIndex(label => label.id === type)])
+      }
+    }
   </script>
   <script>
     mapboxgl.accessToken = 'pk.eyJ1Ijoib2N0b2JvdDEyMyIsImEiOiJjbHN5Z3k5bHkwZW12MmxvNXJpdjFobnZoIn0.tTskUU1dsOUlk10liEWPmQ';

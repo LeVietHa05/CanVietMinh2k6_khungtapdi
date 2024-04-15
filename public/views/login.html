@@ -91,12 +91,12 @@
             })
                 .then(res => res.json())
                 .then(data => {
-                    alert(data.msg)
                     setTimeout(() => {
                         if (data.msg == "login success") {
                             window.location.href = '/';
                         }
-                    }, 2000)
+                    }, 3000)
+                    alert(data.msg)
 
                 })
         })
