@@ -1,0 +1,95 @@
+<html>
+
+<head>
+  <title>Express</title>
+  <link rel="stylesheet" href="/stylesheets/style.css">
+  <!-- mapbox -->
+  <link href="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.css" rel="stylesheet">
+  <script src="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.js"></script>
+  <style>
+    #map {
+      width: 60%;
+      margin: 24px auto;
+      height: 500px;
+    }
+
+    #marker {
+      background-image: url('https://www.svgrepo.com/show/252928/boat.svg');
+      background-size: cover;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navigation">
+    <ul class="navigation_list">
+      <li class="navigation_elem"><a href="#">Trang chủ</a></li>
+      <li class="navigation_elem"><a href="#">Bài tập hồi phục</a></li>
+      <li class="navigation_elem"><a href="#">Chế độ dinh dưỡng</a></li>
+      <li class="navigation_elem"><a href="#">Giới thiệu</a></li>
+    </ul>
+  </nav>
+  <div class="block" id="status">
+    <h3 class="head">Tình trạng hiện tại</h3>
+    <ul class="stats">
+      <li id="heart">Nhịp tim: <span id="heartRate">60</span> nhịp/phút</li>
+      <li id="o2">SpO<sub>2</sub>: <span id="spo2">90</span>%</li>
+      <li id="temp">Nhiệt độ: <span id="temp">37</span>ºC</li>
+      <li id="move">Di chuyển: <span id="distance">20</span>m</li>
+    </ul>
+    <div class="indicator">
+      <p class="txt">Bình thường</p>
+      <ul class="meter">
+        <li id="green"></li>
+        <li id="yellow"></li>
+        <li id="red1"></li>
+        <li id="red2"></li>
+        <li id="red3"></li>
+      </ul>
+      <p class="txt">Nguy hiểm</p>
+    </div>
+  </div>
+  <div class="block" id="location">
+    <h4>Vị trí hiện tại</h4>
+    <div id="map"></div>
+  </div>
+  <div class="block" id="heart">
+    <h4>Nhịp tim</h4>
+  </div>
+  <div class="block" id="o2">
+    <h4>SpO<sub>2</sub></h4>
+  </div>
+  <div class="block" id="temp">
+    <h4>Nhiệt độ</h4>
+  </div>
+  <script>
+    const socket = io();
+    socket.on('connect', () => {
+      console.log('connected');
+    });
+
+  </script>
+  <script>
+    mapboxgl.accessToken = 'pk.eyJ1Ijoib2N0b2JvdDEyMyIsImEiOiJjbHN5Z3k5bHkwZW12MmxvNXJpdjFobnZoIn0.tTskUU1dsOUlk10liEWPmQ';
+    let markLocation = [105.79852913676373, 21.018691504594486];
+    const map = new mapboxgl.Map({
+      container: 'map', // container ID
+      center: [105.79852913676373, 21.018691504594486], // starting position [lng, lat]
+      zoom: 15 // starting zoom
+    })
+    const popup = new mapboxgl.Popup({ offset: 25 }).setText(
+      'This is the current location'
+    );
+
+    const marker = new mapboxgl.Marker()
+      .setLngLat(markLocation)
+      .setPopup(popup) // sets a popup on this marker
+      .addTo(map);
+  </script>
+</body>
+
+</html>

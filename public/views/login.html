@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập</title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+
+<body>
+    <div id="login">
+        <h1>Đăng nhập </h1>
+        <form action="/login" method="post" class="d-flex justify-content-space-between">
+            <div class="d-flex flex-column">
+                <label for="username">Tài khoản: </label>
+                <label for="password">Mật khẩu: </label>
+            </div>
+            <div class="d-flex flex-column">
+                <input type="text" name="username" id="username" placeholder="your email" autofocus>
+                <input type="password" name="password" id="password" placeholder="your password">
+            </div>
+        </form>
+        <button type="submit" id="log">Đăng nhập</button>
+
+        <div class="t-center">
+            <a href="#" id="showRegBtn">Đăng ký</a>
+        </div>
+
+        <div id="regForm" class="d-none">
+            <h1>Đăng ký</h1>
+            <form action="/register" method="post" class="d-flex justify-content-space-between">
+                <div class="d-flex flex-column">
+                    <label for="reg_username">Tài khoản: </label>
+                    <label for="reg_password">Mật khẩu: </label>
+                    <label for="repassword">Nhập lại mật khẩu: </label>
+                </div>
+                <div class="d-flex flex-column">
+                    <input type="text" name="reg_username" id="reg_username">
+                    <input type="password" name="reg_password" id="reg_password">
+                    <input type="password" name="repassword" id="repassword">
+                </div>
+            </form>
+            <button type="submit" id="reg">Đăng ký</button>
+        </div>
+    </div>
+
+    <script>
+        let reg_btn = document.getElementById('reg');
+        let log_btn = document.getElementById('log');
+        let showRegBtn = document.getElementById('showRegBtn');
+        reg_btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            let username = document.getElementById('reg_username').value;
+            let password = document.getElementById('reg_password').value;
+            let repassword = document.getElementById('repassword').value;
+            if (password !== repassword) {
+                alert('password not match');
+                return;
+            }
+            fetch('/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    username,
+                    password,
+                    repassword
+                })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    console.log(data)
+                    alert(data.msg)
+                })
+        })
+        log_btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            let username = document.getElementById('username').value;
+            let password = document.getElementById('password').value;
+            fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    username,
+                    password
+                })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    alert(data.msg)
+                    setTimeout(() => {
+                        if (data.msg == "login success") {
+                            window.location.href = '/';
+                        }
+                    }, 2000)
+
+                })
+        })
+        showRegBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            let regForm = document.getElementById('regForm');
+            if (regForm.style.display == 'none') {
+                regForm.style.display = 'block';
+            } else {
+                regForm.style.display = 'none';
+            }
+        })
+    </script>
+</body>
+
+</html>

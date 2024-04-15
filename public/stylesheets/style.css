@@ -1,0 +1,156 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00b7ff;
+}
+
+body {
+  background-color: rgb(255, 249, 227);
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  margin: 0 10%;
+}
+
+.navigation_list {
+  list-style-type: none;
+  display: flex;
+  position: relative;
+  justify-content: right;
+}
+
+.navigation_elem {
+  background-color: rgb(255, 196, 101);
+  border-radius: 10px;
+  margin: 8px;
+  padding: 12px 8px;
+}
+
+.navigation_elem > a {
+  color: black;
+  text-decoration: none;
+}
+
+.navigation_elem:hover {
+  background-color: rgb(255, 152, 0);
+}
+
+.block {
+  border: 3px black solid;
+  border-radius: 10px;
+  margin: 10px 20%;
+  padding: 0 2%;
+  background-color: rgb(255, 229, 185);
+}
+
+#status > .stats {
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+#status > .stats > li {
+  border-radius: 10px;
+  margin: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 96px;
+  width: calc(50% - 10px);
+}
+
+#status #heart,
+#status #move {
+  background-color: rgb(0, 181, 79);
+}
+
+#status #o2 {
+  background-color: rgb(255, 92, 101);
+}
+
+#status #temp {
+  background-color: rgb(255, 187, 0);
+}
+
+#status > .indicator {
+  margin: 0 0 16px 0;
+}
+
+#status .meter {
+  list-style: none;
+  display: inline-flex;
+  padding: 0;
+  border-radius: 10px;
+  height: 16px;
+  width: 50%;
+}
+
+#status .meter > li {
+  width: 20%;
+}
+
+#status .meter #green {
+  background-color: rgb(0, 181, 79);
+  border-radius: 5px 0 0 5px;
+}
+
+#status .meter #yellow {
+  background-color: rgb(255, 187, 0);
+}
+
+#status .meter #red1 {
+  background-color: rgb(255, 92, 101);
+}
+
+#status .meter #red2 {
+  background-color: rgb(255, 0, 34);
+}
+
+#status .meter #red3 {
+  background-color: rgb(211, 0, 0);
+  border-radius: 0 5px 5px 0;
+}
+
+#status .indicator > .txt {
+  font-size: 12px;
+  display: inline;
+}
+
+#login {
+  border: 3px black solid;
+  border-radius: 10px;
+  padding: 0% 2% 1%;
+  background-color: rgb(255, 229, 185);
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+
+.t-center {
+  text-align: center;
+}
+
+.d-none {
+  display: none;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+.justify-content-space-between {
+  justify-content: space-between;
+}
+
+label {
+  padding: 3px;
+}
