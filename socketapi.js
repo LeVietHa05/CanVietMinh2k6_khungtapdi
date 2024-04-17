@@ -31,20 +31,25 @@ io.on("connection", (socket) => {
                 return;
             }
             else {
-                const acc = await DataModel.findOne({ clientID: data.clientID });
-                if (!acc) {
-                    console.log("No account found");
-                    return;
-                }
-                let now = new Date();
-                let time = now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
-                let date = now.getDate() + "/" + now.getMonth() + "/" + now.getFullYear();
-
-                acc.updateData(data.temp, data.spo2, data.pulse, `${time} ${date}`);
-                await acc.save();
+//                 const acc = await DataModel.findOne({ clientID: data.clientID });
+//                 if (!acc) {
+//                     console.log("No account found");
+//                     return;
+//                 }
+//                 let now = new Date();
+//                 let time = now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
+//                 let date = now.getDate() + "/" + now.getMonth() + "/" + now.getFullYear();
+// 
+//                 acc.updateData(data.temp, data.spo2, data.heartRate, data.distance, `${time} ${date}`);
+//                 acc.updateLatLng(data.lat, data.long);
+//                 await acc.save();
                 lastTimeUpdate = Date.now();
+                console.log("Update data success");
+                socket.broadcast.emit("/web/up-data", { msg: "success" });
+                if (+data.temp > 39) {
+                    socket.broadcast.emit("/web/up-data", { msg: "alert" });
+                }
             }
-            socket.emit("/web/up-data", { msg: "success" });
         } catch (e) {
             console.log("Error when finding account");
             console.log(e)
